@@ -1,5 +1,6 @@
 "==========================================================
-"Version: 2.0
+"Title: rainbow parentheses improved
+"Version: 2.01
 "Author: luochen1990
 "Last Edited: 2012 Aug 22
 "Vim Version: 7.3.46
@@ -11,13 +12,13 @@
 "Advanced Configuration:
 "use rainbow_parentheses#load(...) to load your setting:
 "		a:1 means the kinds of parentheses to match
-"		a:2 means the deepth of parentheses
+"		a:2 means the max deepth of parentheses
 "			e.g. au syntax * cal rainbow_parentheses#load(
 "					\	[['(',')'],['\[','\]'],['{','}'],['begin','end']]
 "					\	, 64 , 'instantly')
 "you can also change the colors by editting the value of
 "	s:guifgs or s:ctermfgs.
-"use command rptoggle to toggle this plugin.
+"use command :RainbowToggle to toggle this plugin.
 
 
 let s:guifgs = [ 
@@ -47,21 +48,19 @@ func! rainbow_parentheses#load(...)
 endfunc
 
 func! rainbow_parentheses#activate()
-	if !exists('s:active')
-		if !exists('s:loaded')
-			cal rainbow_parentheses#load()
-		endif
-		for id in range(1 , s:max)
-			let ctermfg = s:ctermfgs[(s:max - id) % len(s:ctermfgs)]
-			let guifg = s:guifgs[(s:max - id) % len(s:guifgs)]
-			exe 'hi default lv'.id.'c ctermfg='.ctermfg.' guifg='.guifg
-		endfor
-		let s:active = 'on'
+	if !exists('s:loaded')
+		cal rainbow_parentheses#load()
 	endif
+	for id in range(1 , s:max)
+		let ctermfg = s:ctermfgs[(s:max - id) % len(s:ctermfgs)]
+		let guifg = s:guifgs[(s:max - id) % len(s:guifgs)]
+		exe 'hi default lv'.id.'c ctermfg='.ctermfg.' guifg='.guifg
+	endfor
+	let s:active = 'on'
 endfunc
 
 func! rainbow_parentheses#clear()
-	if exists('s:active') && s:active == 1
+	if exists('s:active')
 		for each in range(1, s:max)
 			exe 'hi clear lv'.each.'c'
 		endfor
@@ -70,12 +69,12 @@ func! rainbow_parentheses#clear()
 endfunc
 
 func! rainbow_parentheses#toggle()
-	if exists('s:active') && s:active == 1
+	if exists('s:active')
 		cal rainbow_parentheses#clear()
 	else
 		cal rainbow_parentheses#activate()
 	endif
 endfunc
 
-command! -nargs=0 RPToggle call rainbow_parentheses#toggle()
+command! RainbowToggle call rainbow_parentheses#toggle()
 " vim:ts=2:sw=2:sts=2
