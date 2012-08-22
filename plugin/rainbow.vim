@@ -1,24 +1,20 @@
 "==========================================================
 "Title: rainbow parentheses improved
-"Version: 2.01
+"Version: 2.1
 "Author: luochen1990
-"Last Edited: 2012 Aug 22
+"Last Edited: 2012 Aug 23
 "Vim Version: 7.3.46
 "Simple Configuration:
-"first, put the rainbow_parentheses.vim to dir vim73/plugin
-"second, add the follow sentence to your .vimrc or _vimrc :
-"		au syntax * cal rainbow_parentheses#activate()
-"third, restart your vim and enjoy coding.
+"First, put "rainbow.vim" to dir vim73/plugin or vimfiles/plugin
+"Second, add the follow sentence to your .vimrc or _vimrc :
+"		au syntax * cal rainbow#activate()
+"Third, restart your vim and enjoy coding.
 "Advanced Configuration:
-"use rainbow_parentheses#load(...) to load your setting:
+"* use rainbow#load(...) to load your setting:
 "		a:1 means the kinds of parentheses to match
-"		a:2 means the max deepth of parentheses
-"			e.g. au syntax * cal rainbow_parentheses#load(
-"					\	[['(',')'],['\[','\]'],['{','}'],['begin','end']]
-"					\	, 64 , 'instantly')
-"you can also change the colors by editting the value of
-"	s:guifgs or s:ctermfgs.
-"use command :RainbowToggle to toggle this plugin.
+"			e.g. au syntax * cal rainbow#load([['(',')'],['\[','\]'],['{','}'],['begin','end']])
+"* you can also change the colors by editting the value of s:guifgs or s:ctermfgs.
+"* use command :RainbowToggle to toggle this plugin.
 
 
 let s:guifgs = [ 
@@ -33,33 +29,45 @@ let s:ctermfgs = [
       \ 'darkred', 'darkgreen', 'darkcyan', 'red',
       \	]
 
-func! rainbow_parentheses#load(...)
+let s:max = has('gui_running')? len(s:guifgs) : len(s:ctermfgs)
+
+func rainbow#load(...)
+	if exists('s:loaded')
+		cal rainbow#clear()
+	endif
 	let s:loaded = (a:0 < 1) ? [['(',')'],['\[','\]'],['{','}']] : a:1
-	let s:max = (a:0 < 2) ? 32 : a:2
 	let cmd = 'syn region %s matchgroup=%s start=/%s/ end=/%s/ containedin=%s'
 	for [left , right] in s:loaded
-		for each in range(1, s:max)
+		for each in range(1, s:max - 1)
 			exe printf(cmd, 'lv'.each, 'lv'.each.'c', left, right, 'lv'.(each+1))
 		endfor
+		exe printf(cmd, 'lv'.s:max, 'lv'.s:max.'c', left, right, 'lv1')
 	endfor
-	if (a:0 >= 3 && a:3 == 'instantly')
-		cal rainbow_parentheses#activate()
+	if (match(a:000 , 'later') == -1)
+		cal rainbow#activate()
 	endif
 endfunc
 
-func! rainbow_parentheses#activate()
+func rainbow#clear()
+	unlet s:loaded
+	for each in range(1 , s:max)
+		exe 'syn clear lv'.each
+	endfor
+endfunc
+
+func rainbow#activate()
 	if !exists('s:loaded')
-		cal rainbow_parentheses#load()
+		cal rainbow#load()
 	endif
 	for id in range(1 , s:max)
 		let ctermfg = s:ctermfgs[(s:max - id) % len(s:ctermfgs)]
 		let guifg = s:guifgs[(s:max - id) % len(s:guifgs)]
 		exe 'hi default lv'.id.'c ctermfg='.ctermfg.' guifg='.guifg
 	endfor
-	let s:active = 'on'
+	let s:active = 'active'
 endfunc
 
-func! rainbow_parentheses#clear()
+func rainbow#inactivate()
 	if exists('s:active')
 		for each in range(1, s:max)
 			exe 'hi clear lv'.each.'c'
@@ -68,13 +76,13 @@ func! rainbow_parentheses#clear()
 	endif
 endfunc
 
-func! rainbow_parentheses#toggle()
+func rainbow#toggle()
 	if exists('s:active')
-		cal rainbow_parentheses#clear()
+		cal rainbow#inactivate()
 	else
-		cal rainbow_parentheses#activate()
+		cal rainbow#activate()
 	endif
 endfunc
 
-command! RainbowToggle call rainbow_parentheses#toggle()
+command! RainbowToggle cal rainbow#toggle()
 " vim:ts=2:sw=2:sts=2
