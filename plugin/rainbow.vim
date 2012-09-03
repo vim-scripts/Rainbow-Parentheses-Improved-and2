@@ -1,8 +1,8 @@
 "==========================================================
 "Title: rainbow parentheses improved
-"Version: 2.1
+"Version: 2.2
 "Author: luochen1990
-"Last Edited: 2012 Aug 23
+"Last Edited: 2012 Sep 3
 "Vim Version: 7.3.46
 "Simple Configuration:
 "First, put "rainbow.vim" to dir vim73/plugin or vimfiles/plugin
@@ -18,8 +18,8 @@
 
 
 let s:guifgs = [ 
-			\ 'DarkOrchid3', 'RoyalBlue3', 'SeaGreen3', 'green', 
-			\ 'yellow', 'orange', 'firebrick3', 
+			\ 'DarkOrchid3', 'RoyalBlue3', 'SeaGreen3',
+			\ 'orange', 'firebrick3', 
 			\ ]
 
 let s:ctermfgs = [
@@ -36,12 +36,16 @@ func rainbow#load(...)
 		cal rainbow#clear()
 	endif
 	let s:loaded = (a:0 < 1) ? [['(',')'],['\[','\]'],['{','}']] : a:1
-	let cmd = 'syn region %s matchgroup=%s start=/%s/ end=/%s/ containedin=%s'
+	let cmd = 'syn region %s matchgroup=%s start=/%s/ end=/%s/ containedin=%s contains=%s'
+	let str = 'TOP'
+	for each in range(1, s:max)
+		let str .= ',lv'.each
+	endfor
 	for [left , right] in s:loaded
 		for each in range(1, s:max - 1)
-			exe printf(cmd, 'lv'.each, 'lv'.each.'c', left, right, 'lv'.(each+1))
+			exe printf(cmd, 'lv'.each, 'lv'.each.'c', left, right, 'lv'.(each+1) , str)
 		endfor
-		exe printf(cmd, 'lv'.s:max, 'lv'.s:max.'c', left, right, 'lv1')
+		exe printf(cmd, 'lv'.s:max, 'lv'.s:max.'c', left, right, 'lv1' , str)
 	endfor
 	if (match(a:000 , 'later') == -1)
 		cal rainbow#activate()
