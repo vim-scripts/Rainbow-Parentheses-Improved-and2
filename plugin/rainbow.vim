@@ -1,47 +1,51 @@
 "==========================================================
-"Title: rainbow parentheses improved
-"Version: 2.2
+"Script Title: rainbow parentheses improved
+"Script Version: 2.3
 "Author: luochen1990
-"Last Edited: 2012 Sep 3
-"Vim Version: 7.3.46
+"Last Edited: 2012 Sep 9
 "Simple Configuration:
 "First, put "rainbow.vim" to dir vim73/plugin or vimfiles/plugin
 "Second, add the follow sentence to your .vimrc or _vimrc :
-"		au syntax * cal rainbow#activate()
+"		autocmd syntax * call rainbow#activate()
 "Third, restart your vim and enjoy coding.
 "Advanced Configuration:
-"* use rainbow#load(...) to load your setting:
-"		a:1 means the kinds of parentheses to match
-"			e.g. au syntax * cal rainbow#load([['(',')'],['\[','\]'],['{','}'],['begin','end']])
+"* use rainbow#load(...) to load your setting :
+"		e.g. you can add the sentence below to your vimrc :
+"			au syntax * cal rainbow#load([['(',')'],['\[','\]'],['{','}'],['begin','end']])
 "* you can also change the colors by editting the value of s:guifgs or s:ctermfgs.
 "* use command :RainbowToggle to toggle this plugin.
+"* if you want to make your vimrc portable (usable without this plugin),
+"  you can define some global variables instead of add autocmd commands :
+"		e.g. you can add the sentences below to your vimrc :
+"			let g:rainbow_active = 1
+"			let g:rainbow_loaded = [['(',')'],['\[','\]'],['{','}'],['begin','end']]
+"			let g:rainbow_guifgs = ['RoyalBlue3', 'DarkOrange3']
 
 
-let s:guifgs = [ 
+
+let s:guifgs = exists('g:rainbow_guifgs')? g:rainbow_guifgs : [
 			\ 'DarkOrchid3', 'RoyalBlue3', 'SeaGreen3',
-			\ 'orange', 'firebrick3', 
+			\ 'DarkOrange3', 'FireBrick', 
 			\ ]
 
-let s:ctermfgs = [
-      \ 'darkgray', 'brown', 'Darkblue', 'darkgreen',
-      \ 'darkmagenta', 'darkcyan', 'darkred', 'brown',
-      \ 'darkmagenta', 'gray', 'black', 'Darkblue',
-      \ 'darkred', 'darkgreen', 'darkcyan', 'red',
-      \	]
+let s:ctermfgs = exists('g:rainbow_ctermfgs')? g:rainbow_ctermfgs : [
+			\ 'darkgray', 'Darkblue', 'darkmagenta', 
+			\ 'darkcyan', 'darkred', 'darkgreen',
+			\ ]
 
 let s:max = has('gui_running')? len(s:guifgs) : len(s:ctermfgs)
 
 func rainbow#load(...)
-	if exists('s:loaded')
+	if exists('b:loaded')
 		cal rainbow#clear()
 	endif
-	let s:loaded = (a:0 < 1) ? [['(',')'],['\[','\]'],['{','}']] : a:1
+	let b:loaded = (a:0 < 1) ? [['(',')'],['\[','\]'],['{','}']] : a:1
 	let cmd = 'syn region %s matchgroup=%s start=/%s/ end=/%s/ containedin=%s contains=%s'
 	let str = 'TOP'
 	for each in range(1, s:max)
 		let str .= ',lv'.each
 	endfor
-	for [left , right] in s:loaded
+	for [left , right] in b:loaded
 		for each in range(1, s:max - 1)
 			exe printf(cmd, 'lv'.each, 'lv'.each.'c', left, right, 'lv'.(each+1) , str)
 		endfor
@@ -53,14 +57,14 @@ func rainbow#load(...)
 endfunc
 
 func rainbow#clear()
-	unlet s:loaded
+	unlet b:loaded
 	for each in range(1 , s:max)
 		exe 'syn clear lv'.each
 	endfor
 endfunc
 
 func rainbow#activate()
-	if !exists('s:loaded')
+	if !exists('b:loaded')
 		cal rainbow#load()
 	endif
 	for id in range(1 , s:max)
@@ -68,25 +72,31 @@ func rainbow#activate()
 		let guifg = s:guifgs[(s:max - id) % len(s:guifgs)]
 		exe 'hi default lv'.id.'c ctermfg='.ctermfg.' guifg='.guifg
 	endfor
-	let s:active = 'active'
+	let b:active = 'active'
 endfunc
 
 func rainbow#inactivate()
-	if exists('s:active')
+	if exists('b:active')
 		for each in range(1, s:max)
 			exe 'hi clear lv'.each.'c'
 		endfor
-		unlet s:active
+		unlet b:active
 	endif
 endfunc
 
 func rainbow#toggle()
-	if exists('s:active')
+	if exists('b:active')
 		cal rainbow#inactivate()
 	else
 		cal rainbow#activate()
 	endif
 endfunc
 
-command! RainbowToggle cal rainbow#toggle()
-" vim:ts=2:sw=2:sts=2
+if exists('g:rainbow_loaded')
+	autocmd syntax * call rainbow#load(g:rainbow_loaded)
+elseif exists('g:rainbow_active')
+	autocmd syntax * call rainbow#activate()
+endif
+
+command! RainbowToggle call rainbow#toggle()
+
