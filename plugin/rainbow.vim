@@ -1,26 +1,33 @@
-"==========================================================
+"==============================================================================
 "Script Title: rainbow parentheses improved
-"Script Version: 2.3
+"Script Version: 2.4
 "Author: luochen1990
-"Last Edited: 2012 Sep 9
+"Last Edited: 2012 Oct 23
 "Simple Configuration:
-"First, put "rainbow.vim" to dir vim73/plugin or vimfiles/plugin
-"Second, add the follow sentence to your .vimrc or _vimrc :
-"		autocmd syntax * call rainbow#activate()
-"Third, restart your vim and enjoy coding.
+"	first, put "rainbow.vim"(this file) to dir vim73/plugin or vimfiles/plugin
+"	second, add the follow sentence to your .vimrc or _vimrc :
+"
+"	 		let g:rainbow_active = 1
+"
+"	third, restart your vim and enjoy coding.
 "Advanced Configuration:
-"* use rainbow#load(...) to load your setting :
-"		e.g. you can add the sentence below to your vimrc :
-"			au syntax * cal rainbow#load([['(',')'],['\[','\]'],['{','}'],['begin','end']])
-"* you can also change the colors by editting the value of s:guifgs or s:ctermfgs.
-"* use command :RainbowToggle to toggle this plugin.
-"* if you want to make your vimrc portable (usable without this plugin),
-"  you can define some global variables instead of add autocmd commands :
-"		e.g. you can add the sentences below to your vimrc :
-"			let g:rainbow_active = 1
-"			let g:rainbow_loaded = [['(',')'],['\[','\]'],['{','}'],['begin','end']]
-"			let g:rainbow_guifgs = ['RoyalBlue3', 'DarkOrange3']
-
+"	an advanced configuration allows you to define what parentheses to use 
+"	for each type of file . you can also determine the colors of your 
+"	parentheses by this way.
+"		e.g. this is an advanced config (add these sentences to your vimrc):
+"
+"	 		let g:rainbow_active = 1
+"  	 
+"  	 		let g:rainbow_load_separately = [
+"  	 			\	[ '*tex' , [['(', ')'], ['\[', '\]']] ],
+"  	 			\	[ '*cpp' , [['(', ')'], ['\[', '\]'], ['{', '}']] ],
+"  	 			\	[ '*htm?' , [['(', ')'], ['\[', '\]'], ['{', '}'], ['<\a[^>]*>', '</[^>]*>']] ],
+"  	 			\	]
+"  	 
+"  	 		let g:rainbow_guifgs = ['RoyalBlue3', 'SeaGreen3', 'DarkOrange3', 'FireBrick',]
+"
+"User Command:
+"	:RainbowToggle		--you can use it to toggle this plugin.
 
 
 let s:guifgs = exists('g:rainbow_guifgs')? g:rainbow_guifgs : [
@@ -40,7 +47,7 @@ func rainbow#load(...)
 		cal rainbow#clear()
 	endif
 	let b:loaded = (a:0 < 1) ? [['(',')'],['\[','\]'],['{','}']] : a:1
-	let cmd = 'syn region %s matchgroup=%s start=/%s/ end=/%s/ containedin=%s contains=%s'
+	let cmd = 'syn region %s matchgroup=%s start=+%s+ end=+%s+ containedin=%s contains=%s'
 	let str = 'TOP'
 	for each in range(1, s:max)
 		let str .= ',lv'.each
@@ -92,11 +99,14 @@ func rainbow#toggle()
 	endif
 endfunc
 
-if exists('g:rainbow_loaded')
-	autocmd syntax * call rainbow#load(g:rainbow_loaded)
-elseif exists('g:rainbow_active')
-	autocmd syntax * call rainbow#activate()
+if exists('g:rainbow_active')
+	if exists('g:rainbow_load_separately')
+		let ps = g:rainbow_load_separately
+		for i in range(len(ps))
+			exe printf('auto bufnewfile,bufreadpost %s call rainbow#load(ps[%d][1])' , ps[i][0] , i)
+		endfor
+	endif 
+	autocmd bufnewfile,bufreadpost * call rainbow#activate()
 endif
-
 command! RainbowToggle call rainbow#toggle()
 

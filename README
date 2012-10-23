@@ -1,24 +1,57 @@
 This is a mirror of http://www.vim.org/scripts/script.php?script_id=4176
 
+插件描述：
+
 As everyone knows, the most complex codes were composed of a mass of different kinds of parentheses. This plugin will help you read these codes by showing different levels of parentheses in different colors. 
+众所周知，最复杂的代码都是由一堆乱七八糟的括号组成。这款插件通过以不同的颜色展示不同层次的括号，致力于帮助你阅读这样的复杂代码。 
 
-See the effect here : http://vim.wikia.com/wiki/Script:4176
+See the effect :  click the "Vim wiki" above
+你可以通过点击该页面右上方的Vim wiki链接，查看插件效果截图。
 
+This plugin is very easy to install , you can follow the "install details" in lower part of this page . 
+这个插件的安装非常容易，你可以跟随页面下方安装说明中的步骤进行。 
+
+========================================================================================================
 What is improved ? 
-* smoother and faster. (linear time complexity) 
-* now you can design your own parentheses  such as 'begin' and 'end' . (with the autocmd for different type of file, you can design  what kinds of parentheses to use for different filetypes. ) 
-* no limit of parentheses levels. 
-* the code is shorter and easier to be read now. (shorter than 100 lines) 
-* separately edit guifgs and ctermfgs (the colors used to highlight) 
+有哪些改进？ 
 
+* separately edit guifgs and ctermfgs (the colors used to highlight) 
+    现在你可以分别自定义图形界面下和终端上所使用的各种括号颜色（因为以前的版本是必须对应地更改相应的颜色） 
+
+* now you can design your own parentheses  such as 'begin' and 'end' . (you can also design  what kinds of parentheses to use for different filetypes. ) 
+    现在你可以自定义括号的形式，不过在这之前你最好了解vim脚本的正则表达式。你甚至可以为不同类型的文件定义不同的括号。 
+
+* now you can even decide to let some operators (like + - * / , ==) hilighted with the parentheses together, you can also decide this seprately for different type of files. 
+    现在你甚至可以决定是否让某些符号跟着它们所在的括号一起高亮，你也可以对不同类型的文件分别设置。 
+
+* no limit of parentheses levels. 
+    现在的版本将不再限制括号的嵌套层数。 
+
+* smoother and faster. (linear time complexity) 
+    更快速和流畅的体验。 
+
+* the code is shorter and easier to be read now. (shorter than 100 lines) 
+    现在该插件的源代码更简短，并且更加可读。 
+
+* the last , but not the least , the chinese statement is added as you see. 
+    最后但并非不重要的一点是，如你所见，现在增加了中文说明。 （当然，主要是考虑到我个人推广的对象更容易接受中文的说明）
+
+========================================================================================================
 Get Old Versions: 
+以下是本插件所参考的旧版本： 
         http://www.vim.org/scripts/script.php?script_id=1561 
         http://www.vim.org/scripts/script.php?script_id=3772 
+
 Old Versions' Author: 
+以下是旧版本的作者们，感谢他们！ 
         Martin Krischik (krischik@users.sourceforge.net) 
         John Gilmore 
         Luc Hermitte (hermitte@free.fr) 
         anonym 
-This Versions' Author: 
-        Luo Chen (luochen1990@gmail.com) 
 
+This Versions' Author: 
+以下是这个版本的作者，有问题可以找这货 
+        Luo Chen (luochen1990@gmail.com)
+
+The Last , give this script a rate if you like it , and i'll appreciate it and improve this plugin for you because of your support ! (just choose 'Life Changing' and click 'rate' from below)
+最后，如果你喜欢这个插件，给它一个评价，我会心存感激，并且因为你的肯定继续改进这个插件！（从页面下方，选择Life Changing选项，然后点击rate）
