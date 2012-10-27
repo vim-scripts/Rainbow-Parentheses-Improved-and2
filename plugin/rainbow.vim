@@ -1,8 +1,8 @@
 "==============================================================================
 "Script Title: rainbow parentheses improved
-"Script Version: 2.4
+"Script Version: 2.41
 "Author: luochen1990
-"Last Edited: 2012 Oct 23
+"Last Edited: 2012 Oct 28
 "Simple Configuration:
 "	first, put "rainbow.vim"(this file) to dir vim73/plugin or vimfiles/plugin
 "	second, add the follow sentence to your .vimrc or _vimrc :
@@ -19,10 +19,11 @@
 "	 		let g:rainbow_active = 1
 "  	 
 "  	 		let g:rainbow_load_separately = [
-"  	 			\	[ '*tex' , [['(', ')'], ['\[', '\]']] ],
-"  	 			\	[ '*cpp' , [['(', ')'], ['\[', '\]'], ['{', '}']] ],
-"  	 			\	[ '*htm?' , [['(', ')'], ['\[', '\]'], ['{', '}'], ['<\a[^>]*>', '</[^>]*>']] ],
-"  	 			\	]
+"			\	[ '*' , [['(', ')'], ['\[', '\]'], ['{', '}']] ],
+"			\	[ '*.tex' , [['(', ')'], ['\[', '\]']] ],
+"			\	[ '*.cpp' , [['(', ')'], ['\[', '\]'], ['{', '}']] ],
+"			\	[ '*.{html,htm}' , [['(', ')'], ['\[', '\]'], ['{', '}'], ['<\a[^>]*>', '</[^>]*>']] ],
+"			\	]
 "  	 
 "  	 		let g:rainbow_guifgs = ['RoyalBlue3', 'SeaGreen3', 'DarkOrange3', 'FireBrick',]
 "
@@ -99,14 +100,16 @@ func rainbow#toggle()
 	endif
 endfunc
 
-if exists('g:rainbow_active')
+if exists('g:rainbow_active') && g:rainbow_active
 	if exists('g:rainbow_load_separately')
 		let ps = g:rainbow_load_separately
 		for i in range(len(ps))
-			exe printf('auto bufnewfile,bufreadpost %s call rainbow#load(ps[%d][1])' , ps[i][0] , i)
+			exe printf('auto bufreadpost %s call rainbow#load(ps[%d][1])' , ps[i][0] , i)
 		endfor
+	else
+		auto bufnewfile,bufreadpost * call rainbow#activate()
 	endif 
-	autocmd bufnewfile,bufreadpost * call rainbow#activate()
 endif
+
 command! RainbowToggle call rainbow#toggle()
 
