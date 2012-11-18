@@ -1,8 +1,8 @@
 "==============================================================================
 "Script Title: rainbow parentheses improved
-"Script Version: 2.5
+"Script Version: 2.51
 "Author: luochen1990
-"Last Edited: 2012 Nov 10
+"Last Edited: 2012 Nov 18
 "Simple Configuration:
 "	first, put "rainbow.vim"(this file) to dir vim73/plugin or vimfiles/plugin
 "	second, add the follow sentences to your .vimrc or _vimrc :
@@ -14,7 +14,7 @@
 "Advanced Configuration:
 "	an advanced configuration allows you to define what parentheses to use 
 "	for each type of file . you can also determine the colors of your 
-"	parentheses by this way.
+"	parentheses by this way (read file vim73/rgb.txt for all named colors) .
 "		e.g. this is an advanced config (add these sentences to your vimrc):
 "
 "	 		let g:rainbow_active = 1
@@ -31,8 +31,10 @@
 "
 "User Command:
 "	:RainbowToggle		--you can use it to toggle this plugin.
+"	:Rainbow			--you can use it to toggle this plugin.
 
 
+" read file vim73/rgb.txt for all named colors
 let s:guifgs = exists('g:rainbow_guifgs')? g:rainbow_guifgs : [
 			\ 'RoyalBlue3', 'DarkOrange3', 'SeaGreen3', 'FireBrick',
 			\ ]
@@ -40,7 +42,7 @@ let s:guifgs = exists('g:rainbow_guifgs')? g:rainbow_guifgs : [
 			"\ 'DarkOrange3', 'FireBrick', 
 
 let s:ctermfgs = exists('g:rainbow_ctermfgs')? g:rainbow_ctermfgs : [
-			\ 'darkgray', 'Darkblue', 'darkmagenta', 
+			\ 'darkgray', 'Darkblue', 'darkmagenta',
 			\ 'darkcyan', 'darkred', 'darkgreen',
 			\ ]
 
@@ -133,4 +135,5 @@ if exists('g:rainbow_active') && g:rainbow_active
 endif
 
 command! RainbowToggle call rainbow#toggle()
+command! Rainbow call rainbow#toggle()
 
